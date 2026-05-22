@@ -48,12 +48,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Esboço.md",
+                "file": "Conceitos/Tendências.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Esboço"
+              "title": "Tendências"
             }
           }
         ]
@@ -218,11 +218,16 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "94168cb83eb1c419",
+  "active": "f30f4026e60ac72b",
   "lastOpenFiles": [
-    "To-do.md",
-    "Conceitos/Tendência.md",
+    "Sem título",
+    "Streamlit.md",
+    "Plotly.md",
+    "Pandas.md",
     "Esboço.md",
+    "Conceitos/Tendências.md",
+    "Conceitos/Comportamentos.md",
+    "To-do.md",
     "Conceitos"
   ]
 }

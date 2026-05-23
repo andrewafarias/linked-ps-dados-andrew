@@ -1,11 +1,25 @@
 import pandas as pd
+import streamlit as st
 from utils import grab_csv_data, month_translator
 
 # Tabela de tradução de meses (dicionário)
 
 
-def main():
-    sales_data = grab_csv_data('data/vendas_linked_ps.csv')
+def data_process(data_filepath) -> dict:
+    """
+    Processa a tabela de dados e retorna os atributos relevantes:
+        sales_data
+        sales_amt
+        total_income
+        avg_ticket
+        status_count
+        cancel_rate
+        day_summary
+        month_summary
+        quarter_summary
+    
+    """
+    sales_data = grab_csv_data(data_filepath)
 
     # === VISÃO GERAL DE VENDAS ===
 
@@ -39,7 +53,7 @@ def main():
     month_summary['month_avg_ticket'] = month_summary['month_income'] / month_summary['month_sales_amt']
     month_summary['month_name'] = month_summary['order_month'].map(month_translator)
 
-    # Faz tabela agrupada por semestre. Colunas: quarter_income | quarter_sales_amt | quarter_avg_ticket
+    # Faz tabela agrupada por trimestre. Colunas: quarter_income | quarter_sales_amt | quarter_avg_ticket
     sales_data['order_quarter'] = sales_data['order_date'].dt.quarter
     quarter_summary = sales_data.groupby('order_quarter').agg(
         quarter_income=('total_value', 'sum'),
@@ -47,9 +61,19 @@ def main():
     ).reset_index()
     quarter_summary['quarter_avg_ticket'] = quarter_summary['quarter_income'] / quarter_summary['quarter_sales_amt']
 
-    print(day_summary)
-    print(month_summary)
-    print(quarter_summary)
+    variable_dict = {
+        'sales_data': sales_data,
+        'sales_amt': sales_amt,
+        'total_income': total_income,
+        'avg_ticket': avg_ticket,
+        'status_count': status_count,
+        'cancel_rate': cancel_rate,
+        'day_summary': day_summary,
+        'month_summary': month_summary,
+        'quarter_summary': quarter_summary,
+    }
+    return variable_dict
 
 if __name__ == '__main__':
-    main()
+    data = data_process('data/vendas_linked_ps.csv')
+    print(data)

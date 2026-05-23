@@ -1,5 +1,20 @@
 import pandas as pd
 
+month_translator = {
+    1: 'Janeiro',
+    2: 'Fevereiro',
+    3: 'Março',
+    4: 'Abril',
+    5: 'Maio',
+    6: 'Junho',
+    7: 'Julho',
+    8: 'Agosto',
+    9: 'Setembro',
+    10: 'Outubro',
+    11: 'Novembro',
+    12: 'Dezembro'
+}
+
 def print_data_info(filepath: str):
     sales_data = pd.read_csv(filepath)
     
@@ -55,4 +70,7 @@ def grab_csv_data(filepath: str) -> pd.DataFrame:
     return df
 
 if __name__ == '__main__':
-    print_data_info('data/vendas_linked_ps.csv')
+    # print_data_info('data/vendas_linked_ps.csv')
+    df = pd.read_csv('data/vendas_linked_ps.csv')
+    canceled_orders = df.loc[df['order_status'] == 'Cancelado']
+    print(canceled_orders, '\n', canceled_orders['order_id'].count())

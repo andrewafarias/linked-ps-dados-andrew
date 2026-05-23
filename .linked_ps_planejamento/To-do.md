@@ -4,6 +4,7 @@
 - [ ] ticket médio
 - [ ] taxa de cancelamento. 
 - [ ] Evolução das vendas ao longo do tempo (gráfico de linha ou barras).
+- [ ] ---
 
 ### Análise por Produto e Categoria
 - [ ] Top 5 produtos mais vendidos (por quantidade e por valor). 

@@ -50,5 +50,9 @@ def print_data_info(filepath: str):
     print(order_statuses)
     print('\n', 20*'=', '\n')
 
+def grab_csv_data(filepath: str) -> pd.DataFrame:
+    df = pd.read_csv(filepath)
+    return df
+
 if __name__ == '__main__':
     print_data_info('data/vendas_linked_ps.csv')

@@ -6,7 +6,7 @@
       {
         "id": "199354fd8b0a9ec7",
         "type": "tabs",
-        "dimension": 34.01639344262295,
+        "dimension": 79.78056426332289,
         "children": [
           {
             "id": "c597d6921746b82c",
@@ -27,7 +27,7 @@
       {
         "id": "8901cd8faf872804",
         "type": "tabs",
-        "dimension": 65.98360655737704,
+        "dimension": 20.219435736677116,
         "children": [
           {
             "id": "c0aa089593dd3e74",
@@ -218,10 +218,10 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "c0aa089593dd3e74",
+  "active": "c597d6921746b82c",
   "lastOpenFiles": [
-    "Análise de Dados.md",
     "To-do.md",
+    "Análise de Dados.md",
     "Pandas.md",
     "Conceitos/Tendências.md",
     "Esboço.md",

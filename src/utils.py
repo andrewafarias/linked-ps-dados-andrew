@@ -30,17 +30,17 @@ def print_data_info(filepath: str):
     print(sales_data.describe())
     print('\n', 20*'=', '\n')
 
-    print('--- Categorias de produtos vendidos:')
+    print('--- Categorias de produtos com pedidos:')
     categories_list = sales_data['product_category'].unique()
     print(categories_list)
     print('\n', 20*'=', '\n')
 
-    print('--- Produtos distintos que foram vendidos')
+    print('--- Produtos distintos que foram pedidos')
     products_sold = sales_data['product_name'].unique()
     print(products_sold)
     print('\n', 20*'=', '\n')
 
-    print('--- Verificação de se todas as vendas ocorreram em 2024')
+    print('--- Verificação se todos os pedidos ocorreram em 2024')
     dates: list[str] = sales_data['order_date'].to_list()
     for dt in dates:
         year, *_ = dt.split('-')
@@ -50,7 +50,7 @@ def print_data_info(filepath: str):
     print('Verificação finalizada.')
     print('\n', 20*'=', '\n')
 
-    print('--- Regiões com venda')
+    print('--- Regiões com pedidos')
     regions = sales_data['customer_region'].unique()
     print(regions)
     print('\n', 20*'=', '\n')

@@ -4,8 +4,8 @@ from utils import grab_csv_data, month_translator
 
 # Tabela de tradução de meses (dicionário)
 
-
-def data_process(data_filepath) -> dict:
+@st.cache_data
+def sales_data_process(data_filepath) -> dict:
     """
     Processa a tabela de dados e retorna os atributos relevantes:
         sales_data
@@ -17,6 +17,8 @@ def data_process(data_filepath) -> dict:
         day_summary
         month_summary
         quarter_summary
+
+    IMPORTANTE: Considera que as vendas sejam todas feitas em um único ano.
     
     """
     sales_data = grab_csv_data(data_filepath)
@@ -37,29 +39,29 @@ def data_process(data_filepath) -> dict:
 
     sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
 
-    # Faz tabela agrupada por dia. Colunas: day_income | day_sales_amt | day_avg_ticket
+    # Faz tabela agrupada por dia. Colunas: income | sales_amt | avg_ticket
     day_summary = sales_data.groupby('order_date').agg(
-        day_income=('total_value', 'sum'),
-        day_sales_amt=('order_id', 'count')
+        income=('total_value', 'sum'),
+        sales_amt=('order_id', 'count')
     ).reset_index()
-    day_summary['day_avg_ticket'] = day_summary['day_income'] / day_summary['day_sales_amt']
+    day_summary['avg_ticket'] = day_summary['income'] / day_summary['sales_amt']
 
-    # Faz tabela agrupada por mês. Colunas: month_income | month_sales_amt | month_avg_ticket
+    # Faz tabela agrupada por mês. Colunas: income | sales_amt | avg_ticket
     sales_data['order_month'] = sales_data['order_date'].dt.month
     month_summary = sales_data.groupby('order_month').agg(
-        month_income = ('total_value', 'sum'),
-        month_sales_amt = ('order_id', 'count')
+        income = ('total_value', 'sum'),
+        sales_amt = ('order_id', 'count')
     ).reset_index()
-    month_summary['month_avg_ticket'] = month_summary['month_income'] / month_summary['month_sales_amt']
+    month_summary['avg_ticket'] = month_summary['income'] / month_summary['sales_amt']
     month_summary['month_name'] = month_summary['order_month'].map(month_translator)
 
-    # Faz tabela agrupada por trimestre. Colunas: quarter_income | quarter_sales_amt | quarter_avg_ticket
+    # Faz tabela agrupada por trimestre. Colunas: income | sales_amt | avg_ticket
     sales_data['order_quarter'] = sales_data['order_date'].dt.quarter
     quarter_summary = sales_data.groupby('order_quarter').agg(
-        quarter_income=('total_value', 'sum'),
-        quarter_sales_amt=('order_id', 'count')
+        income=('total_value', 'sum'),
+        sales_amt=('order_id', 'count')
     ).reset_index()
-    quarter_summary['quarter_avg_ticket'] = quarter_summary['quarter_income'] / quarter_summary['quarter_sales_amt']
+    quarter_summary['avg_ticket'] = quarter_summary['income'] / quarter_summary['sales_amt']
 
     variable_dict = {
         'sales_data': sales_data,
@@ -75,5 +77,5 @@ def data_process(data_filepath) -> dict:
     return variable_dict
 
 if __name__ == '__main__':
-    data = data_process('data/vendas_linked_ps.csv')
+    data = sales_data_process('data/vendas_linked_ps.csv')
     print(data)

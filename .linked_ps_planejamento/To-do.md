@@ -1,10 +1,9 @@
 ### Visão geral de vendas
-- [ ] Total de pedidos
-- [ ] receita total
-- [ ] ticket médio
-- [ ] taxa de cancelamento. 
-- [ ] Evolução das vendas ao longo do tempo (gráfico de linha ou barras).
-	- [ ] Escolher entre vendas/faturamento
+- [x] Total de pedidos
+- [x] receita total
+- [x] ticket médio
+- [x] taxa de cancelamento. 
+- [x] Evolução das vendas ao longo do tempo (gráfico de linha ou barras).
 - [ ] ---
 
 ### Análise por Produto e Categoria

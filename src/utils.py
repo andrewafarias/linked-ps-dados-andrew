@@ -1,18 +1,18 @@
 import pandas as pd
 
 month_translator = {
-    1: 'Janeiro',
-    2: 'Fevereiro',
-    3: 'Março',
-    4: 'Abril',
-    5: 'Maio',
-    6: 'Junho',
-    7: 'Julho',
-    8: 'Agosto',
-    9: 'Setembro',
-    10: 'Outubro',
-    11: 'Novembro',
-    12: 'Dezembro'
+    1: 'Jan',
+    2: 'Fev',
+    3: 'Mar',
+    4: 'Abr',
+    5: 'Mai',
+    6: 'Jun',
+    7: 'Jul',
+    8: 'Ago',
+    9: 'Set',
+    10: 'Out',
+    11: 'Nov',
+    12: 'Dez'
 }
 
 def print_data_info(filepath: str):
@@ -69,6 +69,8 @@ def grab_csv_data(filepath: str) -> pd.DataFrame:
     df = pd.read_csv(filepath)
     return df
 
+def currency_format(value: float | int):
+    return f"R$ {value:,.2f}".replace(',', 'X').replace('.', ',').replace('X','.')
 if __name__ == '__main__':
     # print_data_info('data/vendas_linked_ps.csv')
     df = pd.read_csv('data/vendas_linked_ps.csv')

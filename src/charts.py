@@ -1,8 +1,10 @@
 import streamlit as st
+import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 
-def _build_period_charts(period_df, x_: str) -> dict:
+def build_period_charts(period_df: pd.DataFrame, x_: str) -> dict:
     return {
         'period_income': px.line(period_df, x=x_, y='income', title='Evolução do Faturamento'),
         'period_orders_amt': px.line(period_df, x=x_, y='orders_amt', title='Evolução dos Pedidos'),
@@ -10,67 +12,67 @@ def _build_period_charts(period_df, x_: str) -> dict:
     }
 
 @st.cache_data
-def build_charts(dataset: dict) -> dict:
-    period_charts = {
-        'Diário': _build_period_charts(dataset['day_summary'], 'order_date'),
-        'Mensal': _build_period_charts(dataset['month_summary'], 'month_name'),
-        'Trimestral': _build_period_charts(dataset['quarter_summary'], 'order_quarter'),
-    }
-
-    product_rank_income = px.bar(
-        dataset['product_rank_income'],
+def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        product_rank_income_df,
         x='total_value',
         y='product_name',
         orientation='h',
         title='Top 5 Produtos com Maior Faturamento'
     )
-    product_rank_orders_amt = px.bar(
-        dataset['product_rank_orders_amt'],
-        x='order_id',
+
+@st.cache_data
+def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        product_rank_orders_amt_df,
+        x='quantity',
         y='product_name',
         orientation='h',
         title='Top 5 Produtos Mais Pedidos'
     )
-    product_rank_avgticket = px.bar(
-        dataset['product_rank_avgticket'],
+
+@st.cache_data
+def build_product_rank_avgticket(product_rank_avgticket_df: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        product_rank_avgticket_df,
         x='avg_ticket',
         y='product_name',
         orientation='h',
         title='Top 5 Produtos com Maior Ticket Médio'
     )
 
-    category_proportion_income = px.pie(
-        dataset['category_proportion_income'],
+@st.cache_data
+def build_category_proportion_income(category_proportion_income_df: pd.DataFrame) -> go.Figure:
+    return px.pie(
+        category_proportion_income_df,
         names='product_category',
         values='total_value',
         title='Faturamento por Categoria'
     )
-    category_proportion_orders_amt = px.pie(
-        dataset['category_proportion_orders_amt'],
+
+@st.cache_data
+def build_category_proportion_orders_amt(category_proportion_orders_amt_df: pd.DataFrame) -> go.Figure:
+    return px.pie(
+        category_proportion_orders_amt_df,
         names='product_category',
-        values='order_id',
+        values='quantity',
         title='Pedidos por Categoria'
     )
-    category_proportion_avgticket = px.bar(
-        dataset['category_proportion_avgticket'],
+
+@st.cache_data
+def build_category_proportion_avgticket(category_proportion_avgticket_df: pd.DataFrame, avg_ticket: float) -> go.Figure:
+    fig = px.bar(
+        category_proportion_avgticket_df,
         x='avg_ticket',
         y='product_category',
         orientation='h',
         title='Ticket Médio por Categoria',
         color='product_category'
     )
-    category_proportion_avgticket.add_vline(
-        x=dataset['avg_ticket'],
+    fig.add_vline(
+        x=avg_ticket,
         line_dash='dash',
-        annotation_text='Ticket Médio global'
+        annotation_text='Ticket Médio global',
+        annotation_position='bottom right'
     )
-
-    return {
-        'period_charts': period_charts,
-        'product_rank_income': product_rank_income,
-        'product_rank_orders_amt': product_rank_orders_amt,
-        'product_rank_avgticket': product_rank_avgticket,
-        'category_proportion_income': category_proportion_income,
-        'category_proportion_orders_amt': category_proportion_orders_amt,
-        'category_proportion_avgticket': category_proportion_avgticket,
-    }
+    return fig

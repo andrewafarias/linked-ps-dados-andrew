@@ -2,51 +2,43 @@ import pandas as pd
 import streamlit as st
 from utils import grab_csv_data, month_translator
 
-# Tabela de tradução de meses (dicionário)
+@st.cache_data
+def get_orders_amt(sales_data: pd.DataFrame) -> int:
+    return int(sales_data['order_id'].count())
 
 @st.cache_data
-def sales_data_process(data_filepath) -> dict:
-    """
-    Processa a tabela de dados e retorna os atributos relevantes:
-        sales_data
-        orders_amt
-        total_income
-        avg_ticket
-        status_count
-        cancel_rate
-        day_summary
-        month_summary
-        quarter_summary
+def get_total_income(sales_data: pd.DataFrame) -> float:
+    return float(sales_data['total_value'].sum())
 
-    IMPORTANTE: Considera que os pedidos sejam todos feitos em um único ano.
-    
-    """
-    sales_data = grab_csv_data(data_filepath)
+@st.cache_data
+def get_avg_ticket(sales_data: pd.DataFrame) -> float:
+    return float(get_total_income(sales_data) / get_orders_amt(sales_data))
 
-    # === VISÃO GERAL DE PEDIDOS ===
+@st.cache_data
+def get_status_count(sales_data: pd.DataFrame) -> pd.Series:
+    return sales_data.groupby('order_status')['order_id'].count()
 
-    orders_amt = sales_data['order_id'].count() # Calcula quantidade de pedidos
+@st.cache_data
+def get_cancel_rate(sales_data: pd.DataFrame) -> float:
+    status_count = get_status_count(sales_data)
+    cancel_amt = status_count['Cancelado'] if 'Cancelado' in status_count else 0
+    return float(cancel_amt / get_orders_amt(sales_data))
 
-    total_income = sales_data['total_value'].sum() # Calcula receita total
-
-    avg_ticket = total_income / orders_amt # Calcula ticket médio
-
-    status_count = sales_data.groupby('order_status')['order_id'].count() # Series com quantidade de cada status
-
-    cancel_rate = status_count['Cancelado'] / orders_amt # Calcula taxa de cancelamento
-
-    # --- Cria as tabelas sobre tempo (receitas por mês, pedidos por dias, etc.)
-
+@st.cache_data
+def get_day_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
+    sales_data = sales_data.copy()
     sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
-
-    # Faz tabela agrupada por dia. Colunas: income | orders_amt | avg_ticket
     day_summary = sales_data.groupby('order_date').agg(
         income=('total_value', 'sum'),
         orders_amt=('order_id', 'count')
     ).reset_index()
     day_summary['avg_ticket'] = day_summary['income'] / day_summary['orders_amt']
+    return day_summary
 
-    # Faz tabela agrupada por mês. Colunas: income | orders_amt | avg_ticket
+@st.cache_data
+def get_month_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
+    sales_data = sales_data.copy()
+    sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
     sales_data['order_month'] = sales_data['order_date'].dt.month
     month_summary = sales_data.groupby('order_month').agg(
         income = ('total_value', 'sum'),
@@ -54,62 +46,58 @@ def sales_data_process(data_filepath) -> dict:
     ).reset_index()
     month_summary['avg_ticket'] = month_summary['income'] / month_summary['orders_amt']
     month_summary['month_name'] = month_summary['order_month'].map(month_translator)
+    return month_summary
 
-    # Faz tabela agrupada por trimestre. Colunas: income | orders_amt | avg_ticket
+@st.cache_data
+def get_quarter_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
+    sales_data = sales_data.copy()
+    sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
     sales_data['order_quarter'] = sales_data['order_date'].dt.quarter
     quarter_summary = sales_data.groupby('order_quarter').agg(
         income=('total_value', 'sum'),
         orders_amt=('order_id', 'count')
     ).reset_index()
     quarter_summary['avg_ticket'] = quarter_summary['income'] / quarter_summary['orders_amt']
+    return quarter_summary
 
-    # === PAINEL 02: TABELAS PARA ANÁLISE DE PRODUTOS E CATEGORIAS ===
-
+@st.cache_data
+def get_product_rank_income(sales_data: pd.DataFrame) -> pd.DataFrame:
     product_rank_income = sales_data.groupby('product_name')['total_value'].sum().reset_index()
-    product_rank_income = product_rank_income.sort_values(by='total_value', ascending=True).head(5)
+    return product_rank_income.sort_values(by='total_value', ascending=True).head(5)
 
-    product_rank_orders_amt = sales_data.groupby('product_name')['order_id'].count().reset_index()
-    product_rank_orders_amt = product_rank_orders_amt.sort_values(by='order_id', ascending=True).head(5)
+@st.cache_data
+def get_product_rank_volume(sales_data: pd.DataFrame) -> pd.DataFrame:
+    product_rank_volume = sales_data.groupby('product_name')['quantity'].sum().reset_index()
+    return product_rank_volume.sort_values(by='quantity', ascending=True).head(5)
 
+@st.cache_data
+def get_product_rank_avgticket(sales_data: pd.DataFrame) -> pd.DataFrame:
     product_metrics = sales_data.groupby('product_name').agg(
         total_value=('total_value', 'sum'),
         order_id=('order_id', 'count')
     ).reset_index()
     product_metrics['avg_ticket'] = product_metrics['total_value'] / product_metrics['order_id']
-    product_rank_avgticket = product_metrics.sort_values(by='avg_ticket', ascending=True).head(5)
+    return product_metrics.sort_values(by='avg_ticket', ascending=True).head(5)
 
+@st.cache_data
+def get_category_proportion_income(sales_data: pd.DataFrame) -> pd.DataFrame:
     category_proportion_income = sales_data.groupby('product_category')['total_value'].sum().reset_index()
-    category_proportion_income = category_proportion_income.sort_values(by='total_value', ascending=False)
+    return category_proportion_income.sort_values(by='total_value', ascending=False)
 
-    category_proportion_orders_amt = sales_data.groupby('product_category')['order_id'].count().reset_index()
-    category_proportion_orders_amt = category_proportion_orders_amt.sort_values(by='order_id', ascending=False)
+@st.cache_data
+def get_category_proportion_volume(sales_data: pd.DataFrame) -> pd.DataFrame:
+    category_proportion_volume = sales_data.groupby('product_category')['quantity'].sum().reset_index()
+    return category_proportion_volume.sort_values(by='quantity', ascending=False)
 
+@st.cache_data
+def get_category_proportion_avgticket(sales_data: pd.DataFrame) -> pd.DataFrame:
     category_metrics = sales_data.groupby('product_category').agg(
         total_value=('total_value', 'sum'),
         order_id=('order_id', 'count')
     ).reset_index()
     category_metrics['avg_ticket'] = category_metrics['total_value'] / category_metrics['order_id']
-    category_proportion_avgticket = category_metrics.sort_values(by='avg_ticket', ascending=False)
-
-    variable_dict = {
-        'sales_data': sales_data,
-        'orders_amt': orders_amt,
-        'total_income': total_income,
-        'avg_ticket': avg_ticket,
-        'status_count': status_count,
-        'cancel_rate': cancel_rate,
-        'day_summary': day_summary,
-        'month_summary': month_summary,
-        'quarter_summary': quarter_summary,
-        'product_rank_income': product_rank_income,
-        'product_rank_orders_amt': product_rank_orders_amt,
-        'product_rank_avgticket': product_rank_avgticket,
-        'category_proportion_income': category_proportion_income,
-        'category_proportion_orders_amt': category_proportion_orders_amt,
-        'category_proportion_avgticket': category_proportion_avgticket,
-    }
-    return variable_dict
+    return category_metrics.sort_values(by='avg_ticket', ascending=False)
 
 if __name__ == '__main__':
-    data = sales_data_process('data/vendas_linked_ps.csv')
-    print(data)
+    data = grab_csv_data('data/vendas_linked_ps.csv')
+    print(get_orders_amt(data))

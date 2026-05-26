@@ -107,7 +107,7 @@ def main():
 
     st.title("Dashboard de Desempenho de Pedidos")
 
-    # === 01 VISÃO GERAL DE VENDAS - TOPO DO DASHBOARD ===
+    # === 01 VISÃO GERAL DE VENDAS ===
     render_sales_overview_panel(sales_data)
     
     # === 02 ANÁLISE POR PRODUTO E CATEGORIA ===

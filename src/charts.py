@@ -28,7 +28,7 @@ def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> g
         x='quantity',
         y='product_name',
         orientation='h',
-        title='Top 5 Produtos Mais Pedidos'
+        title='Top 5 Produtos de Maior Volume de Vendas'
     )
 
 @st.cache_data
@@ -56,7 +56,7 @@ def build_category_proportion_orders_amt(category_proportion_orders_amt_df: pd.D
         category_proportion_orders_amt_df,
         names='product_category',
         values='quantity',
-        title='Pedidos por Categoria'
+        title='Volume de Vendas por Categoria'
     )
 
 @st.cache_data

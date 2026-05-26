@@ -63,6 +63,34 @@ def sales_data_process(data_filepath) -> dict:
     ).reset_index()
     quarter_summary['avg_ticket'] = quarter_summary['income'] / quarter_summary['orders_amt']
 
+    # === PAINEL 02: TABELAS PARA ANÁLISE DE PRODUTOS E CATEGORIAS ===
+
+    product_rank_income = sales_data.groupby('product_name')['total_value'].sum().reset_index()
+    product_rank_income = product_rank_income.sort_values(by='total_value', ascending=True).head(5)
+
+    product_rank_orders_amt = sales_data.groupby('product_name')['order_id'].count().reset_index()
+    product_rank_orders_amt = product_rank_orders_amt.sort_values(by='order_id', ascending=True).head(5)
+
+    product_metrics = sales_data.groupby('product_name').agg(
+        total_value=('total_value', 'sum'),
+        order_id=('order_id', 'count')
+    ).reset_index()
+    product_metrics['avg_ticket'] = product_metrics['total_value'] / product_metrics['order_id']
+    product_rank_avgticket = product_metrics.sort_values(by='avg_ticket', ascending=True).head(5)
+
+    category_proportion_income = sales_data.groupby('product_category')['total_value'].sum().reset_index()
+    category_proportion_income = category_proportion_income.sort_values(by='total_value', ascending=False)
+
+    category_proportion_orders_amt = sales_data.groupby('product_category')['order_id'].count().reset_index()
+    category_proportion_orders_amt = category_proportion_orders_amt.sort_values(by='order_id', ascending=False)
+
+    category_metrics = sales_data.groupby('product_category').agg(
+        total_value=('total_value', 'sum'),
+        order_id=('order_id', 'count')
+    ).reset_index()
+    category_metrics['avg_ticket'] = category_metrics['total_value'] / category_metrics['order_id']
+    category_proportion_avgticket = category_metrics.sort_values(by='avg_ticket', ascending=False)
+
     variable_dict = {
         'sales_data': sales_data,
         'orders_amt': orders_amt,
@@ -73,6 +101,12 @@ def sales_data_process(data_filepath) -> dict:
         'day_summary': day_summary,
         'month_summary': month_summary,
         'quarter_summary': quarter_summary,
+        'product_rank_income': product_rank_income,
+        'product_rank_orders_amt': product_rank_orders_amt,
+        'product_rank_avgticket': product_rank_avgticket,
+        'category_proportion_income': category_proportion_income,
+        'category_proportion_orders_amt': category_proportion_orders_amt,
+        'category_proportion_avgticket': category_proportion_avgticket,
     }
     return variable_dict
 

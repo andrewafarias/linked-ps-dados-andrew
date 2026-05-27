@@ -8,7 +8,7 @@ def build_period_charts(period_df: pd.DataFrame, x_: str) -> dict:
     return {
         'period_income': px.line(period_df, x=x_, y='income', title='Evolução do Faturamento'),
         'period_orders_amt': px.line(period_df, x=x_, y='orders_amt', title='Evolução dos Pedidos'),
-        'period_avgticket': px.line(period_df, x=x_, y='avg_ticket', title='Evolução do Ticket Médio'),
+        'period_avg_ticket': px.line(period_df, x=x_, y='avg_ticket', title='Evolução do Ticket Médio'),
     }
 
 @st.cache_data
@@ -32,9 +32,9 @@ def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> g
     )
 
 @st.cache_data
-def build_product_rank_avgticket(product_rank_avgticket_df: pd.DataFrame) -> go.Figure:
+def build_product_rank_avg_ticket(product_rank_avg_ticket_df: pd.DataFrame) -> go.Figure:
     return px.bar(
-        product_rank_avgticket_df,
+        product_rank_avg_ticket_df,
         x='avg_ticket',
         y='product_name',
         orientation='h',
@@ -60,9 +60,9 @@ def build_category_proportion_orders_amt(category_proportion_orders_amt_df: pd.D
     )
 
 @st.cache_data
-def build_category_proportion_avgticket(category_proportion_avgticket_df: pd.DataFrame, avg_ticket: float) -> go.Figure:
+def build_category_proportion_avg_ticket(category_proportion_avg_ticket_df: pd.DataFrame, avg_ticket: float) -> go.Figure:
     fig = px.bar(
-        category_proportion_avgticket_df,
+        category_proportion_avg_ticket_df,
         x='avg_ticket',
         y='product_category',
         orientation='h',

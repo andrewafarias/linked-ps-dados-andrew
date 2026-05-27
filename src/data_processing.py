@@ -2,6 +2,9 @@ import pandas as pd
 import streamlit as st
 from utils import grab_csv_data, month_translator
 
+#================================
+#--- 01 VISÃO GERAL DE VENDAS ---
+#================================
 @st.cache_data
 def get_orders_amt(sales_data: pd.DataFrame) -> int:
     return int(sales_data['order_id'].count())
@@ -25,7 +28,8 @@ def get_cancel_rate(sales_data: pd.DataFrame) -> float:
     return float(cancel_amt / get_orders_amt(sales_data))
 
 @st.cache_data
-def get_day_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
+def get_day_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """Retorna um DataFrame com as colunas: order_date, income, orders_amt, avg_ticket."""
     sales_data = sales_data.copy()
     sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
     day_summary = sales_data.groupby('order_date').agg(
@@ -36,7 +40,8 @@ def get_day_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
     return day_summary
 
 @st.cache_data
-def get_month_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
+def get_month_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """Retorna um DataFrame com as colunas: order_month, income, orders_amt, avg_ticket, month_name."""
     sales_data = sales_data.copy()
     sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
     sales_data['order_month'] = sales_data['order_date'].dt.month
@@ -49,7 +54,8 @@ def get_month_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
     return month_summary
 
 @st.cache_data
-def get_quarter_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
+def get_quarter_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """Retorna um DataFrame com as colunas: order_quarter, income, orders_amt, avg_ticket."""
     sales_data = sales_data.copy()
     sales_data['order_date'] = pd.to_datetime(sales_data['order_date']) 
     sales_data['order_quarter'] = sales_data['order_date'].dt.quarter
@@ -60,43 +66,44 @@ def get_quarter_summary(sales_data: pd.DataFrame) -> pd.DataFrame:
     quarter_summary['avg_ticket'] = quarter_summary['income'] / quarter_summary['orders_amt']
     return quarter_summary
 
-@st.cache_data
-def get_product_rank_income(sales_data: pd.DataFrame) -> pd.DataFrame:
-    product_rank_income = sales_data.groupby('product_name')['total_value'].sum().reset_index()
-    return product_rank_income.sort_values(by='total_value', ascending=True).head(5)
+#===========================================
+#--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---
+#===========================================
 
 @st.cache_data
-def get_product_rank_volume(sales_data: pd.DataFrame) -> pd.DataFrame:
-    product_rank_volume = sales_data.groupby('product_name')['quantity'].sum().reset_index()
-    return product_rank_volume.sort_values(by='quantity', ascending=True).head(5)
-
-@st.cache_data
-def get_product_rank_avgticket(sales_data: pd.DataFrame) -> pd.DataFrame:
+def get_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """Retorna um DataFrame com as colunas: product_name, total_value, quantity, order_id, avg_ticket."""
     product_metrics = sales_data.groupby('product_name').agg(
         total_value=('total_value', 'sum'),
+        quantity=('quantity', 'sum'),
         order_id=('order_id', 'count')
     ).reset_index()
     product_metrics['avg_ticket'] = product_metrics['total_value'] / product_metrics['order_id']
-    return product_metrics.sort_values(by='avg_ticket', ascending=True).head(5)
+    return product_metrics
 
 @st.cache_data
-def get_category_proportion_income(sales_data: pd.DataFrame) -> pd.DataFrame:
-    category_proportion_income = sales_data.groupby('product_category')['total_value'].sum().reset_index()
-    return category_proportion_income.sort_values(by='total_value', ascending=False)
-
-@st.cache_data
-def get_category_proportion_volume(sales_data: pd.DataFrame) -> pd.DataFrame:
-    category_proportion_volume = sales_data.groupby('product_category')['quantity'].sum().reset_index()
-    return category_proportion_volume.sort_values(by='quantity', ascending=False)
-
-@st.cache_data
-def get_category_proportion_avgticket(sales_data: pd.DataFrame) -> pd.DataFrame:
+def get_category_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """Retorna um DataFrame com as colunas: product_category, total_value, quantity, order_id, avg_ticket."""
     category_metrics = sales_data.groupby('product_category').agg(
         total_value=('total_value', 'sum'),
+        quantity=('quantity', 'sum'),
         order_id=('order_id', 'count')
     ).reset_index()
     category_metrics['avg_ticket'] = category_metrics['total_value'] / category_metrics['order_id']
-    return category_metrics.sort_values(by='avg_ticket', ascending=False)
+    return category_metrics
+
+#=============================================
+#--- 05 DISTRIBUIÇÃO GEOGRÁFICA DAS VENDAS ---
+#=============================================
+
+def get_region_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    region_metrics = sales_data.groupby('customer_region').agg({
+        'total_value': 'sum',
+        'order_id': 'count',
+        'quantity': 'sum'
+    })
+    region_metrics['avg_ticket'] = region_metrics['total_value'] / region_metrics['order_id']
+    return region_metrics
 
 if __name__ == '__main__':
     data = grab_csv_data('data/vendas_linked_ps.csv')

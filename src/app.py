@@ -70,7 +70,7 @@ def render_products_and_categories_panel(sales_data):
 
     analysis_metric = st.radio(
         'Métrica de análise:',
-        ['Faturamento', 'Pedidos', 'Ticket Médio'],
+        ['Faturamento', 'Volume', 'Ticket Médio'],
         horizontal=True,
         key='metric_selector'
     )
@@ -81,13 +81,17 @@ def render_products_and_categories_panel(sales_data):
     product_fig = None
     category_fig = None
     if analysis_metric == 'Faturamento':
-        product_fig = charts.build_product_rank_income(product_metrics.sort_values(by='total_value', ascending=True).head(5))
+        product_fig = charts.build_product_rank_income(
+            product_metrics.sort_values(by='total_value', ascending=False).head(5).iloc[::-1]
+        )
         category_fig = charts.build_category_proportion_income(category_metrics.sort_values(by='total_value', ascending=False))
-    elif analysis_metric == 'Pedidos':
-        product_fig = charts.build_product_rank_orders_amt(product_metrics.sort_values(by='quantity', ascending=True).head(5))
+    elif analysis_metric == 'Volume':
+        product_fig = charts.build_product_rank_orders_amt(
+            product_metrics.sort_values(by='quantity', ascending=False).head(5).iloc[::-1]
+        )
         category_fig = charts.build_category_proportion_orders_amt(category_metrics.sort_values(by='quantity', ascending=False))
     else: # analysis_metric == 'Ticket Médio'
-        product_fig = charts.build_product_rank_avg_ticket(product_metrics.sort_values(by='avg_ticket', ascending=True).head(5))
+        product_fig = charts.build_product_rank_avg_ticket(product_metrics.sort_values(by='avg_ticket', ascending=False).head(5).iloc[::-1])
         avg_ticket = dp.get_avg_ticket(sales_data)
         category_fig = charts.build_category_proportion_avg_ticket(category_metrics.sort_values(by='avg_ticket', ascending=False), avg_ticket)
 
@@ -103,12 +107,13 @@ def render_geographical_distribution_panel(sales_data):
 
     # Coluna de faturamento por região
     with col1:
+
         # Faz cartão de maior faturamento
         container = st.container(border=True)
         with container:
-            ind = region_df['total_value'].idxmax()
-            best_region_name = region_df.loc[ind]['customer_region']
-            best_region_avg_ticket = region_df.loc[ind]['total_value'].item()
+            max_region_ind = region_df['total_value'].idxmax()
+            best_region_name = region_df.loc[max_region_ind]['customer_region']
+            best_region_avg_ticket = region_df.loc[max_region_ind]['total_value'].item()
             best_region_avg_ticket = currency_format(best_region_avg_ticket)
             st.metric('Maior faturamento', f'{best_region_name}', delta_description=best_region_avg_ticket)
 
@@ -118,12 +123,13 @@ def render_geographical_distribution_panel(sales_data):
     
     # Coluna de pedidos por região
     with col2:
+
         # Faz cartão de maior volume de pedidos
         container = st.container(border=True)
         with container:
-            ind = region_df['order_id'].idxmax()
-            best_region_name = region_df.loc[ind]['customer_region']
-            best_region_orders_amt = str(region_df.loc[ind]['order_id'].item())
+            max_region_ind = region_df['order_id'].idxmax()
+            best_region_name = region_df.loc[max_region_ind]['customer_region']
+            best_region_orders_amt = str(region_df.loc[max_region_ind]['order_id'].item())
             best_region_orders_amt += " pedidos"
             st.metric('Maior volume de pedidos', f'{best_region_name}', delta_description=best_region_orders_amt)
         
@@ -133,12 +139,13 @@ def render_geographical_distribution_panel(sales_data):
     
     # Coluna de ticket médio por região
     with col3:
+
         # Faz cartão de maior ticket médio
         container = st.container(border=True)
         with container:
-            ind = region_df['avg_ticket'].idxmax()
-            best_region_name = region_df.loc[ind]['customer_region']
-            best_region_avg_ticket = region_df.loc[ind]['avg_ticket'].item()
+            max_region_ind = region_df['avg_ticket'].idxmax()
+            best_region_name = region_df.loc[max_region_ind]['customer_region']
+            best_region_avg_ticket = region_df.loc[max_region_ind]['avg_ticket'].item()
             best_region_avg_ticket = currency_format(best_region_avg_ticket) + " por compra"
             st.metric('Maior ticket médio', f'{best_region_name}', delta_description=best_region_avg_ticket)
 

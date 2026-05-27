@@ -6,10 +6,23 @@
       {
         "id": "199354fd8b0a9ec7",
         "type": "tabs",
-        "dimension": 79.78056426332289,
         "children": [
           {
             "id": "c597d6921746b82c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "To-do.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "To-do"
+            }
+          },
+          {
+            "id": "e1d260470540ce55",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -22,28 +35,8 @@
               "title": "Análise de Dados"
             }
           }
-        ]
-      },
-      {
-        "id": "8901cd8faf872804",
-        "type": "tabs",
-        "dimension": 20.219435736677116,
-        "children": [
-          {
-            "id": "c0aa089593dd3e74",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "To-do.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "To-do"
-            }
-          }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -100,8 +93,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "cee996a657f53423",
@@ -218,10 +210,11 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "c0aa089593dd3e74",
+  "active": "e1d260470540ce55",
   "lastOpenFiles": [
-    "Análise de Dados.md",
     "To-do.md",
+    "Análise de Dados.md",
+    "Descrição de Dados.md",
     "Pandas.md",
     "Conceitos/Tendências.md",
     "Esboço.md",

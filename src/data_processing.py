@@ -113,4 +113,6 @@ def get_region_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
 
 if __name__ == '__main__':
     data = grab_csv_data('data/vendas_linked_ps.csv')
-    print(get_orders_amt(data))
+    product_metrics = get_product_metrics(data)
+    print(product_metrics.sort_values(by='total_value', ascending=False))
+    print(product_metrics['order_id'].sum())

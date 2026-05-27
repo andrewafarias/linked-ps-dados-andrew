@@ -1,7 +1,7 @@
 import streamlit as st
 import data_processing as dp
 import charts
-from utils import currency_format, grab_csv_data
+from utils import currency_format
 
 
 def render_sales_overview_panel(sales_data):
@@ -97,11 +97,57 @@ def render_products_and_categories_panel(sales_data):
 
 def render_geographical_distribution_panel(sales_data):
     st.header('Distribuição Geográfica das Vendas')
+    region_df = dp.get_region_metrics(sales_data)
     
-    
+    col1, col2, col3 = st.columns(3)
 
+    # Coluna de faturamento por região
+    with col1:
+        # Faz cartão de maior faturamento
+        container = st.container(border=True)
+        with container:
+            ind = region_df['total_value'].idxmax()
+            best_region_name = region_df.loc[ind]['customer_region']
+            best_region_avg_ticket = region_df.loc[ind]['total_value'].item()
+            best_region_avg_ticket = currency_format(best_region_avg_ticket)
+            st.metric('Maior faturamento', f'{best_region_name}', delta_description=best_region_avg_ticket)
+
+        # Plota gráfico de faturamento por região
+        fig = charts.build_regions_income(region_df)
+        st.plotly_chart(fig)
+    
+    # Coluna de pedidos por região
+    with col2:
+        # Faz cartão de maior volume de pedidos
+        container = st.container(border=True)
+        with container:
+            ind = region_df['order_id'].idxmax()
+            best_region_name = region_df.loc[ind]['customer_region']
+            best_region_orders_amt = str(region_df.loc[ind]['order_id'].item())
+            best_region_orders_amt += " pedidos"
+            st.metric('Maior volume de pedidos', f'{best_region_name}', delta_description=best_region_orders_amt)
+        
+        # Plota gráfico de volume de pedidos por região
+        fig = charts.build_regions_orders_amt(region_df)
+        st.plotly_chart(fig)
+    
+    # Coluna de ticket médio por região
+    with col3:
+        # Faz cartão de maior ticket médio
+        container = st.container(border=True)
+        with container:
+            ind = region_df['avg_ticket'].idxmax()
+            best_region_name = region_df.loc[ind]['customer_region']
+            best_region_avg_ticket = region_df.loc[ind]['avg_ticket'].item()
+            best_region_avg_ticket = currency_format(best_region_avg_ticket) + " por compra"
+            st.metric('Maior ticket médio', f'{best_region_name}', delta_description=best_region_avg_ticket)
+
+        # Plota gráfico de ticket médio por região
+        fig = charts.build_regions_avg_ticket(region_df)
+        st.plotly_chart(fig)
+    
 def main():
-    sales_data = grab_csv_data('data/vendas_linked_ps.csv')
+    sales_data = dp.grab_csv_data('data/vendas_linked_ps.csv')
     
     st.set_page_config(
         page_title="Andrew - Desafio de Dados",

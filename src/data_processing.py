@@ -1,6 +1,10 @@
 import pandas as pd
 import streamlit as st
-from utils import grab_csv_data, month_translator
+from utils import month_translator
+
+def grab_csv_data(filepath: str) -> pd.DataFrame:
+    df = pd.read_csv(filepath)
+    return df
 
 #================================
 #--- 01 VISÃO GERAL DE VENDAS ---
@@ -101,9 +105,10 @@ def get_region_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
         'total_value': 'sum',
         'order_id': 'count',
         'quantity': 'sum'
-    })
+    }).reset_index().sort_values(by='customer_region')
     region_metrics['avg_ticket'] = region_metrics['total_value'] / region_metrics['order_id']
     return region_metrics
+
 
 if __name__ == '__main__':
     data = grab_csv_data('data/vendas_linked_ps.csv')

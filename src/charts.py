@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+#================================
+#--- 01 VISÃO GERAL DE VENDAS ---
+#================================
 
 def build_period_charts(period_df: pd.DataFrame, x_: str) -> dict:
     return {
@@ -11,6 +14,9 @@ def build_period_charts(period_df: pd.DataFrame, x_: str) -> dict:
         'period_avg_ticket': px.line(period_df, x=x_, y='avg_ticket', title='Evolução do Ticket Médio'),
     }
 
+#===========================================
+#--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---
+#===========================================
 @st.cache_data
 def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure:
     return px.bar(
@@ -76,3 +82,37 @@ def build_category_proportion_avg_ticket(category_proportion_avg_ticket_df: pd.D
         annotation_position='bottom right'
     )
     return fig
+
+#=============================================
+#--- 05 DISTRIBUIÇÃO GEOGRÁFICA DAS VENDAS ---
+#=============================================
+
+@st.cache_data
+def build_regions_income(region_df: pd.DataFrame,) -> go.Figure:
+    return px.bar(
+        region_df,
+        x='customer_region',
+        y='total_value',
+        title='Faturamento por Região'
+        #color='customer_region'
+    ).update_layout(showlegend=False)
+
+@st.cache_data
+def build_regions_orders_amt(region_df: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        region_df,
+        x='customer_region',
+        y='order_id',
+        title='Pedidos por Região'
+        #color='customer_region'
+    ).update_layout(showlegend=False)
+
+@st.cache_data
+def build_regions_avg_ticket(region_df: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        region_df,
+        x='customer_region',
+        y='avg_ticket',
+        title='Ticket Médio por Região'
+        #color='customer_region'
+    ).update_layout(showlegend=False)

@@ -65,9 +65,6 @@ def print_data_info(filepath: str):
     print(order_statuses)
     print('\n', 20*'=', '\n')
 
-def grab_csv_data(filepath: str) -> pd.DataFrame:
-    df = pd.read_csv(filepath)
-    return df
 
 def currency_format(value: float | int):
     return f"R$ {value:,.2f}".replace(',', 'X').replace('.', ',').replace('X','.')

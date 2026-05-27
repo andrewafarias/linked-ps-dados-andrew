@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from utils import month_translator
 
+@st.cache_data
 def grab_csv_data(filepath: str) -> pd.DataFrame:
     df = pd.read_csv(filepath)
     return df

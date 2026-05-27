@@ -146,6 +146,9 @@ def render_geographical_distribution_panel(sales_data):
         fig = charts.build_regions_avg_ticket(region_df)
         st.plotly_chart(fig)
     
+def render_insights_and_conclusions(sales_data):
+    pass
+
 def main():
     sales_data = dp.grab_csv_data('data/vendas_linked_ps.csv')
     
@@ -157,14 +160,17 @@ def main():
 
     st.title("Dashboard de Desempenho de Pedidos")
 
-    # === 01 VISÃO GERAL DE VENDAS ===
+    # 01 VISÃO GERAL DE VENDAS
     render_sales_overview_panel(sales_data)
     
-    # === 02 ANÁLISE POR PRODUTO E CATEGORIA ===
+    # 02 ANÁLISE POR PRODUTO E CATEGORIA
     render_products_and_categories_panel(sales_data)
 
-    # === 03 DISTRIBUIÇÃO GEOGRÁFICA ===
+    # 03 DISTRIBUIÇÃO GEOGRÁFICA
     render_geographical_distribution_panel(sales_data)
+
+    # 04 INSGHTS E CONCLUSÕES
+    render_insights_and_conclusions(sales_data)
     
 
 if __name__ == '__main__':

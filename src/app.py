@@ -82,18 +82,20 @@ def render_products_and_categories_panel(sales_data):
 
     product_fig = None
     category_fig = None
+    
     if analysis_metric == 'Faturamento':
-        product_fig = charts.build_product_rank_income(
-            product_metrics.sort_values(by='total_value', ascending=False).head(5).iloc[::-1]
-        )
+        rank = product_metrics.sort_values(by='total_value', ascending=False).head(5).iloc[::-1]
+        product_fig = charts.build_product_rank_income(rank)
         category_fig = charts.build_category_proportion_income(category_metrics.sort_values(by='total_value', ascending=False))
+
     elif analysis_metric == 'Volume':
-        product_fig = charts.build_product_rank_orders_amt(
-            product_metrics.sort_values(by='quantity', ascending=False).head(5).iloc[::-1]
-        )
+        rank = product_metrics.sort_values(by='quantity', ascending=False).head(5).iloc[::-1]
+        product_fig = charts.build_product_rank_orders_amt(rank)
         category_fig = charts.build_category_proportion_orders_amt(category_metrics.sort_values(by='quantity', ascending=False))
+        
     else: # analysis_metric == 'Ticket Médio'
-        product_fig = charts.build_product_rank_avg_ticket(product_metrics.sort_values(by='avg_ticket', ascending=False).head(5).iloc[::-1])
+        rank = product_metrics.sort_values(by='avg_ticket', ascending=False).head(5).iloc[::-1]
+        product_fig = charts.build_product_rank_avg_ticket(rank)
         avg_ticket = dp.get_avg_ticket(sales_data)
         category_fig = charts.build_category_proportion_avg_ticket(category_metrics.sort_values(by='avg_ticket', ascending=False), avg_ticket)
 

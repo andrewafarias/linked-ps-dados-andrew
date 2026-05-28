@@ -45,7 +45,8 @@ def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure
         y='product_name',
         orientation='h',
         title='Top 5 Produtos com Maior Faturamento',
-        labels={'total_value': 'Faturamento (R$)', 'product_name': 'Produto'}
+        hover_data={'unit_price_mean':':.2f'},
+        labels={'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
 @st.cache_data

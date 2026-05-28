@@ -81,7 +81,8 @@ def get_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
     product_metrics = sales_data.groupby('product_name').agg(
         total_value=('total_value', 'sum'),
         quantity=('quantity', 'sum'),
-        order_id=('order_id', 'count')
+        order_id=('order_id', 'count'),
+        unit_price_mean=('unit_price', 'mean')
     ).reset_index()
     product_metrics['avg_ticket'] = product_metrics['total_value'] / product_metrics['order_id']
     return product_metrics

@@ -82,7 +82,8 @@ def get_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
         total_value=('total_value', 'sum'),
         quantity=('quantity', 'sum'),
         order_id=('order_id', 'count'),
-        unit_price_mean=('unit_price', 'mean')
+        unit_price_mean=('unit_price', 'mean'),
+        product_category=('product_category', 'unique')
     ).reset_index()
     product_metrics['avg_ticket'] = product_metrics['total_value'] / product_metrics['order_id']
     return product_metrics
@@ -102,6 +103,7 @@ def get_category_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
 #--- 05 DISTRIBUIÇÃO GEOGRÁFICA DAS VENDAS ---
 #=============================================
 
+@st.cache_data
 def get_region_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
     region_metrics = sales_data.groupby('customer_region').agg({
         'total_value': 'sum',
@@ -111,6 +113,16 @@ def get_region_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
     region_metrics['avg_ticket'] = region_metrics['total_value'] / region_metrics['order_id']
     return region_metrics
 
+@st.cache_data
+def get_region_category_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """Retorna um df agrupado por (região, categoria) com as colunas: 'order_id'(count), 'quantity'(sum), 'total_value'(sum)"""
+    region_category_metrics = sales_data.groupby(['customer_region', 'product_category']).agg(
+        order_id=('order_id', 'count'),
+        quantity=('quantity', 'sum'),
+        total_value=('total_value', 'sum')
+    ).reset_index()
+    region_category_metrics['avg_ticket'] = region_category_metrics['total_value'] / region_category_metrics['order_id']
+    return region_category_metrics
 
 if __name__ == '__main__':
     data = grab_csv_data('data/vendas_linked_ps.csv')

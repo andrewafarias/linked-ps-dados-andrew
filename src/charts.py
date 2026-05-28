@@ -49,6 +49,7 @@ def build_status_charts(status_df: pd.DataFrame) -> go.Figure:
 #===========================================
 #--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---
 #===========================================
+
 @st.cache_data
 def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure:
     return px.bar(
@@ -160,3 +161,64 @@ def build_regions_avg_ticket(region_df: pd.DataFrame) -> go.Figure:
         labels={'customer_region': 'Região', 'avg_ticket': 'Ticket Médio (R$)'}
         #color='customer_region'
     ).update_layout(showlegend=False)
+
+@st.cache_data
+def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, go.Figure]:
+    
+    # -- Constrói o chart de categorias mais pedidas em cada estado
+    orders_rank = (
+        region_category_df
+        .sort_values(['customer_region', 'order_id'], ascending=[True, False])
+        .groupby('customer_region').head(1)
+        .reset_index()
+    )
+
+    orders_fig = px.bar(
+        orders_rank,
+        x='customer_region',
+        y='order_id',
+        color='product_category',
+        title='Categoria com mais pedidos por região',
+        labels={'customer_region': 'Região', 'order_id': 'Quantidade de pedidos', 'product_category': 'Categoria'}
+    )
+
+    # -- Constrói o chart de categorias de maior faturamento em cada estado
+    income_rank = (
+        region_category_df
+        .sort_values(['customer_region', 'total_value'], ascending=[True, False])
+        .groupby('customer_region').head(1)
+        .reset_index()
+    )
+    income_fig = px.bar(
+        orders_rank,
+        x='customer_region',
+        y='total_value',
+        color='product_category',
+        title='Categoria de maior faturamento por região',
+        labels={'customer_region': 'Região', 'total_value': 'Faturamento', 'product_category': 'Categoria'}
+    )
+
+    # -- Constrói o chart de categoria com maior ticket médio por região
+    ticket_rank = (
+        region_category_df
+        .sort_values(['customer_region', 'avg_ticket'], ascending=[True, False])
+        .groupby('customer_region').head(1)
+        .reset_index()
+    )
+    ticket_fig = px.bar(
+        ticket_rank,
+        x='customer_region',
+        y='avg_ticket',
+        color='product_category',
+        title='Categoria de maior ticket médio por região',
+        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_category': 'Categoria'}
+    )
+
+    return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig':ticket_fig}
+
+if __name__ == '__main__':
+    from data_processing import *
+    df = grab_csv_data('data/vendas_linked_ps.csv')
+    region_df = get_region_category_metrics(df)
+    #print(region_df)
+    build_region_category_charts(region_df)

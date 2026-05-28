@@ -50,7 +50,7 @@ def render_sales_overview_panel(sales_data):
     elif granularity == "Mensal":
         period_df = dp.get_month_metrics(sales_data)
         period_figures = charts.build_period_charts(period_df, 'month_name')
-    else:
+    else: # Trimestral
         period_df = dp.get_quarter_metrics(sales_data)
         period_figures = charts.build_period_charts(period_df, 'order_quarter')
 
@@ -62,9 +62,6 @@ def render_sales_overview_panel(sales_data):
     
     with col2:
         st.plotly_chart(period_figures['period_orders_amt'])
-    
-    st.subheader('Características dos pedidos')
-    st.plotly_chart(charts.build_status_charts(dp.get_status_count(sales_data).reset_index()))
 
 
 def render_products_and_categories_panel(sales_data):
@@ -156,6 +153,21 @@ def render_geographical_distribution_panel(sales_data):
         # Plota gráfico de ticket médio por região
         fig = charts.build_regions_avg_ticket(region_df)
         st.plotly_chart(fig)
+    
+    # === GRÁFICOS DE MAIOR CATEGORIA POR REGIÃO ===
+    st.subheader('Categorias por região')
+    region_category_df = dp.get_region_category_metrics(sales_data)
+    figs = charts.build_region_category_charts(region_category_df)
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1: st.plotly_chart(figs['income_fig'])
+    with col2: st.plotly_chart(figs['orders_fig'])
+    with col3: st.plotly_chart(figs['ticket_fig'])
+    
+    # === GRÁFICOS DE MAIOR CATEGORIA POR REGIÃO ===
+
+
     
 def render_insights_and_conclusions(sales_data):
     pass

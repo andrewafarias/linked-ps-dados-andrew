@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Descrição de Dados.md",
+                "file": "Análise de Dados.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Descrição de Dados"
+              "title": "Análise de Dados"
             }
           }
         ],
@@ -212,16 +212,16 @@
   },
   "active": "e1d260470540ce55",
   "lastOpenFiles": [
+    "Esboço.md",
+    "Pandas.md",
+    "Plotly.md",
+    "Streamlit.md",
+    "To-do.md",
+    "Descrição de Dados.md",
     "Análise de Dados.md",
     "Conceitos/Comportamentos.md",
-    "To-do.md",
-    "Plotly.md",
-    "Pandas.md",
-    "Esboço.md",
-    "Descrição de Dados.md",
     "Conceitos/Tendências.md",
     "Sem título",
-    "Streamlit.md",
     "Conceitos"
   ]
 }

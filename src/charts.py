@@ -216,6 +216,60 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
 
     return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig':ticket_fig}
 
+@st.cache_data
+def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go.Figure]:
+    
+    # -- Constrói o chart de Produtos mais pedidas em cada estado
+    orders_rank = (
+        region_product_df
+        .sort_values(['customer_region', 'order_id'], ascending=[True, False])
+        .groupby('customer_region').head(1)
+        .reset_index()
+    )
+
+    orders_fig = px.bar(
+        orders_rank,
+        x='customer_region',
+        y='order_id',
+        color='product_name',
+        title='Produto com mais pedidos por região',
+        labels={'customer_region': 'Região', 'order_id': 'Quantidade de pedidos', 'product_name': 'Produto'}
+    )
+
+    # -- Constrói o chart de Produtos de maior faturamento em cada estado
+    income_rank = (
+        region_product_df
+        .sort_values(['customer_region', 'total_value'], ascending=[True, False])
+        .groupby('customer_region').head(1)
+        .reset_index()
+    )
+    income_fig = px.bar(
+        orders_rank,
+        x='customer_region',
+        y='total_value',
+        color='product_name',
+        title='Produto de maior faturamento por região',
+        labels={'customer_region': 'Região', 'total_value': 'Faturamento', 'product_name': 'Produto'}
+    )
+
+    # -- Constrói o chart de Produto com maior ticket médio por região
+    ticket_rank = (
+        region_product_df
+        .sort_values(['customer_region', 'avg_ticket'], ascending=[True, False])
+        .groupby('customer_region').head(1)
+        .reset_index()
+    )
+    ticket_fig = px.bar(
+        ticket_rank,
+        x='customer_region',
+        y='avg_ticket',
+        color='product_name',
+        title='Produto de maior ticket médio por região',
+        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_name': 'Produto'}
+    )
+
+    return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig':ticket_fig}
+
 if __name__ == '__main__':
     from data_processing import *
     df = grab_csv_data('data/vendas_linked_ps.csv')

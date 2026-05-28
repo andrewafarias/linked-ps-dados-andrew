@@ -156,6 +156,7 @@ def render_geographical_distribution_panel(sales_data):
     
     # === GRÁFICOS DE MAIOR CATEGORIA POR REGIÃO ===
     st.subheader('Categorias por região')
+    
     region_category_df = dp.get_region_category_metrics(sales_data)
     figs = charts.build_region_category_charts(region_category_df)
 
@@ -165,8 +166,17 @@ def render_geographical_distribution_panel(sales_data):
     with col2: st.plotly_chart(figs['orders_fig'])
     with col3: st.plotly_chart(figs['ticket_fig'])
     
-    # === GRÁFICOS DE MAIOR CATEGORIA POR REGIÃO ===
+    # === GRÁFICOS DE MAIOR PRODUTO POR REGIÃO ===
+    st.subheader('Produtos por região')
+    
+    region_product_df = dp.get_region_product_metrics(sales_data)
+    figs = charts.build_region_product_charts(region_product_df)
 
+    col1, col2, col3 = st.columns(3)
+
+    with col1: st.plotly_chart(figs['income_fig'])
+    with col2: st.plotly_chart(figs['orders_fig'])
+    with col3: st.plotly_chart(figs['ticket_fig'])
 
     
 def render_insights_and_conclusions(sales_data):

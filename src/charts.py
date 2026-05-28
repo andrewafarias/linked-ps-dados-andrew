@@ -19,11 +19,23 @@ def build_period_charts(period_df: pd.DataFrame, xaxis_column: str) -> dict:
         'orders_amt': 'Volume de Pedidos',
         'avg_ticket': 'Ticket Médio (R$)'
     }
-    return {
-        'period_income': px.line(period_df, x=xaxis_column, y='income', title='Evolução do Faturamento', labels=labels),
-        'period_orders_amt': px.line(period_df, x=xaxis_column, y='orders_amt', title='Evolução dos Pedidos', labels=labels),
-        'period_avg_ticket': px.line(period_df, x=xaxis_column, y='avg_ticket', title='Evolução do Ticket Médio', labels=labels),
+    plot = px.bar if xaxis_column == 'order_quarter' else px.line
+    figures = {
+        'period_income': plot(period_df, x=xaxis_column, y='income', title='Evolução do Faturamento', labels=labels),
+        'period_orders_amt': plot(period_df, x=xaxis_column, y='orders_amt', title='Evolução dos Pedidos', labels=labels),
+        'period_avg_ticket': plot(period_df, x=xaxis_column, y='avg_ticket', title='Evolução do Ticket Médio', labels=labels),
     }
+
+    # Arruma os ticks dos gráficos de trimestre
+    if xaxis_column == 'order_quarter':
+        for fig in figures.values():
+            fig.update_xaxes(
+                tickmode = 'array',
+                tickvals = [1, 2, 3, 4],
+                ticktext = ['Q1', 'Q2', 'Q3', 'Q4']
+            )
+    
+    return figures
 
 def build_status_charts(status_df: pd.DataFrame) -> go.Figure:
     return px.pie(
@@ -45,7 +57,7 @@ def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure
         y='product_name',
         orientation='h',
         title='Top 5 Produtos com Maior Faturamento',
-        hover_data={'unit_price_mean':':.2f'},
+        hover_data={'product_category':True, 'unit_price_mean':':.2f'},
         labels={'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
@@ -57,7 +69,8 @@ def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> g
         y='product_name',
         orientation='h',
         title='Top 5 Produtos de Maior Volume de Vendas',
-        labels={'quantity': 'Quantidade Vendida', 'product_name': 'Produto'}
+        hover_data={'product_category':True, 'unit_price_mean':':.2f'},
+        labels={'quantity': 'Quantidade Vendida', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
 @st.cache_data
@@ -68,7 +81,8 @@ def build_product_rank_avg_ticket(product_rank_avg_ticket_df: pd.DataFrame) -> g
         y='product_name',
         orientation='h',
         title='Top 5 Produtos com Maior Ticket Médio',
-        labels={'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto'}
+        hover_data={'unit_price_mean': ':.2f', 'product_category':True},
+        labels={'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
 @st.cache_data

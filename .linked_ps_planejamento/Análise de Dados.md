@@ -1,1 +1,3 @@
-- Maior parte das compras são feitas 1 dia antes da véspera de natal. Ou o frete é muito rápido ou as pessoas são esquecidas e dão presentes atrasados.
+- Maior parte das compras são feitas 1 dia antes da véspera de natal. Ou o frete é muito rápido ou as pessoas são esquecidas e dão presentes atrasados. Investir em anúncios com mais antecedência talvez seja uma boa
+- Quais são as categorias mais compradas por estado?
+- As vendas são feitas geralmente em que dia da semana? Qual o dia da semana menos vendido? Aponta quando o e-commerce deveria ser priorizado para estar ativo, etc.

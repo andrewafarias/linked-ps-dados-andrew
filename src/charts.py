@@ -7,23 +7,32 @@ import plotly.graph_objects as go
 #--- 01 VISÃO GERAL DE VENDAS ---
 #================================
 
-def build_period_charts(period_df: pd.DataFrame, x_: str) -> dict:
+def build_period_charts(period_df: pd.DataFrame, xaxis_column: str) -> dict:
     x_labels = {
         'order_date': 'Data',
         'month_name': 'Mês',
         'order_quarter': 'Trimestre'
     }
     labels = {
-        x_: x_labels.get(x_, 'Período'),
+        xaxis_column: x_labels.get(xaxis_column, 'Período'),
         'income': 'Faturamento (R$)',
         'orders_amt': 'Volume de Pedidos',
         'avg_ticket': 'Ticket Médio (R$)'
     }
     return {
-        'period_income': px.line(period_df, x=x_, y='income', title='Evolução do Faturamento', labels=labels),
-        'period_orders_amt': px.line(period_df, x=x_, y='orders_amt', title='Evolução dos Pedidos', labels=labels),
-        'period_avg_ticket': px.line(period_df, x=x_, y='avg_ticket', title='Evolução do Ticket Médio', labels=labels),
+        'period_income': px.line(period_df, x=xaxis_column, y='income', title='Evolução do Faturamento', labels=labels),
+        'period_orders_amt': px.line(period_df, x=xaxis_column, y='orders_amt', title='Evolução dos Pedidos', labels=labels),
+        'period_avg_ticket': px.line(period_df, x=xaxis_column, y='avg_ticket', title='Evolução do Ticket Médio', labels=labels),
     }
+
+def build_status_charts(status_df: pd.DataFrame) -> go.Figure:
+    return px.pie(
+        status_df,
+        names='order_status',
+        values='order_id',
+        title='Status dos Pedidos',
+        labels={'order_status': 'Status', 'order_id': 'Quantidade de pedidos'}
+    )
 
 #===========================================
 #--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---

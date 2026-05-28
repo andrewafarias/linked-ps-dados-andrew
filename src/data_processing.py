@@ -28,8 +28,8 @@ def get_status_count(sales_data: pd.DataFrame) -> pd.Series:
 
 @st.cache_data
 def get_cancel_rate(sales_data: pd.DataFrame) -> float:
-    status_count = get_status_count(sales_data)
-    cancel_amt = status_count['Cancelado'] if 'Cancelado' in status_count else 0
+    status_df = get_status_count(sales_data).set_index('order_status')['order_id']
+    cancel_amt = status_df.get('Cancelado', 0)
     return float(cancel_amt / get_orders_amt(sales_data))
 
 @st.cache_data

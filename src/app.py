@@ -36,7 +36,6 @@ def render_sales_overview_panel(sales_data):
             st.metric("Taxa de cancelamento", f"{cancel_rate*100:.2f}%")
     
     # --- Gráficos de tendência
-
     # Seleção de como o usuário quer visualizar os gráficos de tendência (por dia, mês, trimestre)
     granularity = st.radio(
         "Escolha a visão temporal:",
@@ -63,6 +62,9 @@ def render_sales_overview_panel(sales_data):
     
     with col2:
         st.plotly_chart(period_figures['period_orders_amt'])
+    
+    st.subheader('Características dos pedidos')
+    st.plotly_chart(charts.build_status_charts(dp.get_status_count(sales_data).reset_index()))
 
 
 def render_products_and_categories_panel(sales_data):

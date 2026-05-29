@@ -59,7 +59,7 @@ def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure
         orientation='h',
         title='Top 5 produtos com maior faturamento',
         hover_data={'product_category':True, 'unit_price_mean':':.2f'},
-        labels={'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
+        labels={'product_category': 'Categoria', 'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
 @st.cache_data
@@ -71,7 +71,7 @@ def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> g
         orientation='h',
         title='Top 5 produtos de maior volume de vendas',
         hover_data={'product_category':True, 'unit_price_mean':':.2f'},
-        labels={'quantity': 'Quantidade Vendida', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
+        labels={'product_category': 'Categoria', 'quantity': 'Quantidade Vendida', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
 @st.cache_data
@@ -83,7 +83,7 @@ def build_product_rank_avg_ticket(product_rank_avg_ticket_df: pd.DataFrame) -> g
         orientation='h',
         title='Top 5 produtos com maior ticket médio',
         hover_data={'unit_price_mean': ':.2f', 'product_category':True},
-        labels={'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
+        labels={'product_category': 'Categoria', 'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
 
 @st.cache_data
@@ -271,7 +271,7 @@ def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go
         labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_name': 'Produto'}
     )
 
-    return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig':ticket_fig}
+    return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig': ticket_fig}
 
 #=====================================
 #--- 04 ANÁLISE DOS DIAS DA SEMANA ---

@@ -9,7 +9,7 @@ def render_sales_overview_panel(sales_data):
 
     cancel_rate = dp.get_cancel_rate(sales_data)
     orders_amt = dp.get_orders_amt(sales_data)
-    
+
     # Remove os pedidos cancelados para não influenciar as métricas posteriores.
     sales_data = sales_data[sales_data['order_status'] != 'Cancelado']
 
@@ -217,9 +217,9 @@ def render_insights_and_conclusions(sales_data):
             icon='📈',
             body=
                 'Através dos gráficos de faturamento e volume por trimestre, observamos uma tendência ' \
-                'geral de crescimento, não isolada somente ao final do ano, que de fato se espera um '  \
-                'aumento. Entretanto, seria interessante ter dados de outros anos para saber se não é ' \
-                'um comportamento cíclico.')
+                'geral de crescimento, não isolada somente ao final do ano (que normalmente se espera ' \
+                'um aumento). Entretanto, seria interessante ter dados de outros anos para saber se nã' \
+                'o é um comportamento cíclico.')
         
         st.success(
             title='Os produtos de maior valor estão sendo bem aproveitados',
@@ -279,8 +279,10 @@ def render_insights_and_conclusions(sales_data):
             icon='💰',
             body= 
                 'Análogo à otimização do tempo de entrega, pode-se aumentar o faturamento observand' \
-                'o os produtos de maior ticket médio em cada região e fazendo anúncios (de alcance ' \
-                'específico) deles em seus respectivos lugares de destaque.'
+                'o os produtos de maior ticket médio em cada região e os anunciando em seus' \
+                ' respectivos lugares de destaque. Por exemplo, anunciar produtos de esporte ao nor' \
+                'deste pode ter um alto retorno, por ser uma categoria com grande ticket médio nessa' \
+                ' região.'
         )
 
 def main():
@@ -296,7 +298,8 @@ def main():
 
     # 01 VISÃO GERAL DE VENDAS
     render_sales_overview_panel(sales_data)
-    
+    sales_data = sales_data[sales_data['order_status'] != 'Cancelado'] # Gambiarra
+
     # 02 ANÁLISE POR PRODUTO E CATEGORIA
     render_products_and_categories_panel(sales_data)
 

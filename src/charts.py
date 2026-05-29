@@ -37,14 +37,14 @@ def build_period_charts(period_df: pd.DataFrame, xaxis_column: str) -> dict:
     
     return figures
 
-def build_status_charts(status_df: pd.DataFrame) -> go.Figure:
-    return px.pie(
-        status_df,
-        names='order_status',
-        values='order_id',
-        title='Status dos Pedidos',
-        labels={'order_status': 'Status', 'order_id': 'Quantidade de pedidos'}
-    )
+# def build_status_charts(status_df: pd.DataFrame) -> go.Figure:
+#     return px.pie(
+#         status_df,
+#         names='order_status',
+#         values='order_id',
+#         title='Status dos Pedidos',
+#         labels={'order_status': 'Status', 'order_id': 'Quantidade de pedidos'}
+#     )
 
 #===========================================
 #--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---
@@ -247,7 +247,7 @@ def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go
         .reset_index()
     )
     income_fig = px.bar(
-        orders_rank,
+        income_rank,
         x='customer_region',
         y='total_value',
         color='product_name',

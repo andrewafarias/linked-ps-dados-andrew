@@ -70,6 +70,9 @@ def get_quarter_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
     quarter_summary['avg_ticket'] = quarter_summary['income'] / quarter_summary['orders_amt']
     return quarter_summary
 
+@st.cache_data
+def remove_canceled_orders(sales_data: pd.DataFrame):
+    sales_data = sales_data[sales_data['order_status'] != 'Cancelado']
 
 #===========================================
 #--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---
@@ -166,6 +169,6 @@ def get_weekday_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
 
 if __name__ == '__main__':
     data = grab_csv_data('data/vendas_linked_ps.csv')
-    product_metrics = get_product_metrics(data)
-    print(product_metrics.sort_values(by='total_value', ascending=False))
-    print(product_metrics['order_id'].sum())
+    data = data[data['order_status'] != 'Cancelado']
+    print(data)
+    #print(data[data['order_status'] == 'Cancelado'])

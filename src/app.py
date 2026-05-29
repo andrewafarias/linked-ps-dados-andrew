@@ -7,10 +7,14 @@ from utils import currency_format
 def render_sales_overview_panel(sales_data):
     st.header("Visão Geral")
 
-    total_income = dp.get_total_income(sales_data)
-    orders_amt = dp.get_orders_amt(sales_data)
-    avg_ticket = dp.get_avg_ticket(sales_data)
     cancel_rate = dp.get_cancel_rate(sales_data)
+    orders_amt = dp.get_orders_amt(sales_data)
+    
+    # Remove os pedidos cancelados para não influenciar as métricas posteriores.
+    sales_data = sales_data[sales_data['order_status'] != 'Cancelado']
+
+    total_income = dp.get_total_income(sales_data)
+    avg_ticket = dp.get_avg_ticket(sales_data)
 
     # --- Cartões KPI
     col1, col2, col3, col4 = st.columns(4)

@@ -111,7 +111,7 @@ def get_region_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
         'quantity': 'sum'
     }).reset_index().sort_values(by='customer_region')
     region_metrics['avg_ticket'] = region_metrics['total_value'] / region_metrics['order_id']
-    return region_metrics
+    return region_metrics.sort_values(by='customer_region', ascending=True)
 
 @st.cache_data
 def get_region_category_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
@@ -122,7 +122,7 @@ def get_region_category_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
         total_value=('total_value', 'sum')
     ).reset_index()
     region_category_metrics['avg_ticket'] = region_category_metrics['total_value'] / region_category_metrics['order_id']
-    return region_category_metrics
+    return region_category_metrics.sort_values(by='customer_region', ascending=True)
 
 @st.cache_data
 def get_region_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
@@ -133,7 +133,7 @@ def get_region_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
         total_value=('total_value', 'sum')
     ).reset_index()
     region_product_metrics['avg_ticket'] = region_product_metrics['total_value'] / region_product_metrics['order_id']
-    return region_product_metrics
+    return region_product_metrics.sort_values(by='customer_region', ascending=True)
 
 #=====================================
 #--- 04 ANÁLISE DOS DIAS DA SEMANA ---

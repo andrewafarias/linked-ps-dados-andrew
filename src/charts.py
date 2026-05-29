@@ -171,6 +171,7 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
         .sort_values(['customer_region', 'order_id'], ascending=[True, False])
         .groupby('customer_region').head(1)
         .reset_index()
+        .sort_values('customer_region', ascending=True)
     )
 
     orders_fig = px.bar(
@@ -188,9 +189,10 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
         .sort_values(['customer_region', 'total_value'], ascending=[True, False])
         .groupby('customer_region').head(1)
         .reset_index()
+        .sort_values('customer_region', ascending=True)
     )
     income_fig = px.bar(
-        orders_rank,
+        income_rank,
         x='customer_region',
         y='total_value',
         color='product_category',
@@ -204,6 +206,7 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
         .sort_values(['customer_region', 'avg_ticket'], ascending=[True, False])
         .groupby('customer_region').head(1)
         .reset_index()
+        .sort_values('customer_region', ascending=True)
     )
     ticket_fig = px.bar(
         ticket_rank,

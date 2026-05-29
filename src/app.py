@@ -203,9 +203,81 @@ def render_weekday_analysis(sales_data):
     with col2: st.plotly_chart(order_amt)
     with col3: st.plotly_chart(avg_ticket)
 
-
 def render_insights_and_conclusions(sales_data):
-    pass
+    st.header('Insights')
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.success(
+            title='O e-commerce está crescendo!',
+            icon='📈',
+            body=
+                'Através dos gráficos de faturamento e volume por trimestre, observamos uma tendência ' \
+                'geral de crescimento, não isolada somente ao final do ano, que de fato se espera um '  \
+                'aumento. Entretanto, seria interessante ter dados de outros anos para saber se não é ' \
+                'um comportamento cíclico.')
+        
+        st.success(
+            title='Os produtos de maior valor estão sendo bem aproveitados',
+            icon='🎯',
+            body=
+                'Percebe-se que, em geral, os produtos e categorias de maior ticket médio são també' \
+                'm aqueles que mais dão faturamento. Assim, não há um produto de grande valor co' \
+                'm potencial mal aproveitado. Somente foge a esta regra o "Tênis de Corrida Nike", ' \
+                'que talvez precise de mais anúncios.'
+        )
+    
+    with col2:
+        st.warning(
+            title='Há uma possível falta de anúncios para o natal',
+            icon='🎁',
+            body=
+                'Pelo gráfico de pedidos por dia do ano, nota-se que as compras de presentes para'    \
+                ' o natal ocorrem em sua maioria no dia 23, um dia antes da véspera. A não ser que o' \
+                ' frete seja extremamente rápido, isso significa que o e-commerce está captando some' \
+                'nte aqueles que se esqueceram de comprar os presentes a tempo. Pode ser interessan'  \
+                'te anunciar os produtos com uma antecedência maior, captando uma quantidade maior '  \
+                'de compradores.'
+        )
+
+        st.warning(
+            title='A plataforma não está tendo um bom alcance',
+            icon='🙈',
+            body=
+                'Percebe-se um baixo volume de pedidos, pela média dos dias da semana. Enquanto iss' \
+                'o seria esperado de um estabelecimento que vende somente produtos de valor agregad' \
+                'o, não é o caso de um e-commerce de produtos diversos. É necessário aumentar o alc' \
+                'ance da plataforma com anúncios, promoções ou outras formas.'
+        )
+
+    with col3:
+        st.info(
+            title='Não há um dia privilegiado de compras',
+            icon='🛍️',
+            body=
+                'Pelo o que se observa dos gráficos dos dias da semana, todas as métricas relaciona' \
+                'das não se diferenciam significativamente entre os dias. Portanto, a plataforma pa' \
+                'rar em algum dia específico não causaria mais dano do que em outro.'
+        )
+        
+        st.info(
+            title='Maneiras de otimizar o tempo de entrega e faturamento',
+            icon='🛵',
+            body= 
+                'Analisando os gráficos de pedidos de produtos e categorias por região, pode-se otimiz' \
+                'ar o tempo de entrega distribuindo os produtos em centros de distribuição estratégico' \
+                's, de acordo com a região em que são mais pedidos. Por exemplo, distribuir mais ele'   \
+                'trônicos para os centros na região Sudeste, mais "Tapete Sala 2x3m" para o Nordeste, ' \
+                'etc.'
+        )
+        st.info(
+            title='Maneiras de otimizar o faturamento',
+            icon='💰',
+            body= 
+                'Análogo à otimização do tempo de entrega, pode-se aumentar o faturamento observand' \
+                'o os produtos de maior ticket médio em cada região e fazendo anúncios (de alcance ' \
+                'específico) deles em seus respectivos lugares de destaque.'
+        )
 
 def main():
     sales_data = dp.grab_csv_data('data/vendas_linked_ps.csv')
@@ -232,6 +304,7 @@ def main():
 
     # 05 INSGHTS E CONCLUSÕES
     render_insights_and_conclusions(sales_data)
+    
     
 
 if __name__ == '__main__':

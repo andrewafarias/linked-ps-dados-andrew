@@ -2,10 +2,20 @@ import pandas as pd
 import streamlit as st
 from utils import month_translator
 
+
+def _coerce_string_columns(df: pd.DataFrame) -> pd.DataFrame:
+    string_cols = df.select_dtypes(include=["string"]).columns
+    if string_cols.empty:
+        return df
+    df = df.copy()
+    df[string_cols] = df[string_cols].astype("object")
+    return df
+
 @st.cache_data
 def grab_csv_data(filepath: str) -> pd.DataFrame:
     df = pd.read_csv(filepath)
-    return df
+    # Streamlit cache hashing does not handle pandas StringArray reliably.
+    return _coerce_string_columns(df)
 
 #================================
 #--- 01 VISÃO GERAL DE VENDAS ---
@@ -86,7 +96,7 @@ def get_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
         quantity=('quantity', 'sum'),
         order_id=('order_id', 'count'),
         unit_price_mean=('unit_price', 'mean'),
-        product_category=('product_category', 'unique')
+        product_category=('product_category', 'first')
     ).reset_index()
     product_metrics['avg_ticket'] = product_metrics['total_value'] / product_metrics['order_id']
     return product_metrics

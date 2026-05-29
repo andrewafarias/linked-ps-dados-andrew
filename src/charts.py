@@ -3,6 +3,18 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+PRIMARY_COLOR = "#891F2A"
+HARMONIC_PALETTE = [
+    "#891F2A",
+    "#B14A58",
+    "#CCB75C",
+    "#E2A06E",
+    "#C6B37A",
+    "#7F9A84",
+    "#4C7C7F",
+    "#3C5D6D",
+]
+
 #================================
 #--- 01 VISÃO GERAL DE VENDAS ---
 #================================
@@ -21,9 +33,9 @@ def build_period_charts(period_df: pd.DataFrame, xaxis_column: str) -> dict:
     }
     plot = px.bar if xaxis_column == 'order_quarter' else px.line
     figures = {
-        'period_income': plot(period_df, x=xaxis_column, y='income', title='Evolução do Faturamento', labels=labels),
-        'period_orders_amt': plot(period_df, x=xaxis_column, y='orders_amt', title='Evolução dos Pedidos', labels=labels),
-        'period_avg_ticket': plot(period_df, x=xaxis_column, y='avg_ticket', title='Evolução do Ticket Médio', labels=labels),
+        'period_income': plot(period_df, x=xaxis_column, y='income', title='Evolução do Faturamento', labels=labels, color_discrete_sequence=[PRIMARY_COLOR]),
+        'period_orders_amt': plot(period_df, x=xaxis_column, y='orders_amt', title='Evolução dos Pedidos', labels=labels, color_discrete_sequence=[PRIMARY_COLOR]),
+        'period_avg_ticket': plot(period_df, x=xaxis_column, y='avg_ticket', title='Evolução do Ticket Médio', labels=labels, color_discrete_sequence=[PRIMARY_COLOR]),
     }
 
     # Arruma os ticks dos gráficos de trimestre
@@ -59,7 +71,8 @@ def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure
         orientation='h',
         title='Top 5 produtos com maior faturamento',
         hover_data={'product_category':True, 'unit_price_mean':':.2f'},
-        labels={'product_category': 'Categoria', 'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
+        labels={'product_category': 'Categoria', 'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
     )
 
 @st.cache_data
@@ -71,7 +84,8 @@ def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> g
         orientation='h',
         title='Top 5 produtos de maior volume de vendas',
         hover_data={'product_category':True, 'unit_price_mean':':.2f'},
-        labels={'product_category': 'Categoria', 'quantity': 'Quantidade Vendida', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
+        labels={'product_category': 'Categoria', 'quantity': 'Quantidade Vendida', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
     )
 
 @st.cache_data
@@ -83,7 +97,8 @@ def build_product_rank_avg_ticket(product_rank_avg_ticket_df: pd.DataFrame) -> g
         orientation='h',
         title='Top 5 produtos com maior ticket médio',
         hover_data={'unit_price_mean': ':.2f', 'product_category':True},
-        labels={'product_category': 'Categoria', 'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
+        labels={'product_category': 'Categoria', 'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
     )
 
 @st.cache_data
@@ -93,7 +108,8 @@ def build_category_proportion_income(category_proportion_income_df: pd.DataFrame
         names='product_category',
         values='total_value',
         title='Faturamento por Categoria',
-        labels={'product_category': 'Categoria', 'total_value': 'Faturamento (R$)'}
+        labels={'product_category': 'Categoria', 'total_value': 'Faturamento (R$)'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
 @st.cache_data
@@ -103,7 +119,8 @@ def build_category_proportion_orders_amt(category_proportion_orders_amt_df: pd.D
         names='product_category',
         values='quantity',
         title='Volume de Vendas por Categoria',
-        labels={'product_category': 'Categoria', 'quantity': 'Quantidade Vendida'}
+        labels={'product_category': 'Categoria', 'quantity': 'Quantidade Vendida'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
 @st.cache_data
@@ -115,7 +132,8 @@ def build_category_proportion_avg_ticket(category_proportion_avg_ticket_df: pd.D
         orientation='h',
         title='Ticket Médio por Categoria',
         color='product_category',
-        labels={'avg_ticket': 'Ticket Médio (R$)', 'product_category': 'Categoria'}
+        labels={'avg_ticket': 'Ticket Médio (R$)', 'product_category': 'Categoria'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
     fig.add_vline(
         x=avg_ticket,
@@ -136,7 +154,8 @@ def build_regions_income(region_df: pd.DataFrame,) -> go.Figure:
         x='customer_region',
         y='total_value',
         title='Faturamento por Região',
-        labels={'customer_region': 'Região', 'total_value': 'Faturamento (R$)'}
+        labels={'customer_region': 'Região', 'total_value': 'Faturamento (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
         #color='customer_region'
     ).update_layout(showlegend=False)
 
@@ -147,7 +166,8 @@ def build_regions_orders_amt(region_df: pd.DataFrame) -> go.Figure:
         x='customer_region',
         y='order_id',
         title='Pedidos por Região',
-        labels={'customer_region': 'Região', 'order_id': 'Volume de Pedidos'}
+        labels={'customer_region': 'Região', 'order_id': 'Volume de Pedidos'},
+        color_discrete_sequence=[PRIMARY_COLOR]
         #color='customer_region'
     ).update_layout(showlegend=False)
 
@@ -158,7 +178,8 @@ def build_regions_avg_ticket(region_df: pd.DataFrame) -> go.Figure:
         x='customer_region',
         y='avg_ticket',
         title='Ticket Médio por Região',
-        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket Médio (R$)'}
+        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket Médio (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
         #color='customer_region'
     ).update_layout(showlegend=False)
 
@@ -180,7 +201,8 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
         y='order_id',
         color='product_category',
         title='Categoria com mais pedidos por região',
-        labels={'customer_region': 'Região', 'order_id': 'Quantidade de pedidos', 'product_category': 'Categoria'}
+        labels={'customer_region': 'Região', 'order_id': 'Quantidade de pedidos', 'product_category': 'Categoria'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
     # -- Constrói o chart de categorias de maior faturamento em cada estado
@@ -197,7 +219,8 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
         y='total_value',
         color='product_category',
         title='Categoria de maior faturamento por região',
-        labels={'customer_region': 'Região', 'total_value': 'Faturamento', 'product_category': 'Categoria'}
+        labels={'customer_region': 'Região', 'total_value': 'Faturamento', 'product_category': 'Categoria'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
     # -- Constrói o chart de categoria com maior ticket médio por região
@@ -214,7 +237,8 @@ def build_region_category_charts(region_category_df: pd.DataFrame) -> dict[str, 
         y='avg_ticket',
         color='product_category',
         title='Categoria de maior ticket médio por região',
-        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_category': 'Categoria'}
+        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_category': 'Categoria'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
     return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig':ticket_fig}
@@ -236,7 +260,8 @@ def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go
         y='order_id',
         color='product_name',
         title='Produto com mais pedidos por região',
-        labels={'customer_region': 'Região', 'order_id': 'Quantidade de pedidos', 'product_name': 'Produto'}
+        labels={'customer_region': 'Região', 'order_id': 'Quantidade de pedidos', 'product_name': 'Produto'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
     # -- Constrói o chart de Produtos de maior faturamento em cada estado
@@ -252,7 +277,8 @@ def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go
         y='total_value',
         color='product_name',
         title='Produto de maior faturamento por região',
-        labels={'customer_region': 'Região', 'total_value': 'Faturamento', 'product_name': 'Produto'}
+        labels={'customer_region': 'Região', 'total_value': 'Faturamento', 'product_name': 'Produto'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
     # -- Constrói o chart de Produto com maior ticket médio por região
@@ -268,7 +294,8 @@ def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go
         y='avg_ticket',
         color='product_name',
         title='Produto de maior ticket médio por região',
-        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_name': 'Produto'}
+        labels={'customer_region': 'Região', 'avg_ticket': 'Ticket médio', 'product_name': 'Produto'},
+        color_discrete_sequence=HARMONIC_PALETTE
     )
 
     return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig': ticket_fig}
@@ -284,7 +311,8 @@ def build_weekday_avg_income(weekday_metrics: pd.DataFrame) -> go.Figure:
         x='weekday_name',
         y='avg_income',
         title='Faturamento médio por dia de semana',
-        labels={'weekday_name': '', 'avg_income': 'Faturamento médio (R$)'}
+        labels={'weekday_name': '', 'avg_income': 'Faturamento médio (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
     )
 
 @st.cache_data
@@ -294,7 +322,8 @@ def build_weekday_avg_orders_amt(weekday_metrics: pd.DataFrame) -> go.Figure:
         x='weekday_name',
         y='avg_order_amt',
         title='Quantidade média de pedidos por dia de semana',
-        labels={'weekday_name': '', 'avg_order_amt':'Quantidade média de pedidos'}
+        labels={'weekday_name': '', 'avg_order_amt':'Quantidade média de pedidos'},
+        color_discrete_sequence=[PRIMARY_COLOR]
     )
 
 @st.cache_data
@@ -304,7 +333,8 @@ def build_weekday_avg_ticket(weekday_metrics: pd.DataFrame) -> go.Figure:
         x='weekday_name',
         y='avg_ticket',
         title='Ticket médio por dia de semana',
-        labels={'weekday_name': '', 'avg_ticket': 'Ticket médio (R$)'}
+        labels={'weekday_name': '', 'avg_ticket': 'Ticket médio (R$)'},
+        color_discrete_sequence=[PRIMARY_COLOR]
     )
 
 if __name__ == '__main__':

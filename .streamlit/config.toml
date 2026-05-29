@@ -1,0 +1,4 @@
+[theme]
+themeMode = "light"
+primaryColor = "891F2A"            # Cor de destaque dos botões e seletores
+secondaryBackgroundColor = "891F2A"

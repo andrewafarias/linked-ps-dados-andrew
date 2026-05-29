@@ -230,6 +230,14 @@ def render_insights_and_conclusions(sales_data):
                 'm potencial mal aproveitado. Somente foge a esta regra o "Tênis de Corrida Nike", ' \
                 'que talvez precise de mais anúncios.'
         )
+
+        st.success(
+            title='A plataforma consegue sua rentabilidade por produtos de alto valor',
+            icon='💵',
+            body=
+                'É possível notar, pelos gráficos de rank de produtos, que os de maior faturamento ' \
+                'são o de maior preço unitário. Isso diminui os custos logísticos de entrega!'
+        )
     
     with col2:
         st.warning(
@@ -252,6 +260,15 @@ def render_insights_and_conclusions(sales_data):
                 'o seria esperado de um estabelecimento que vende somente produtos de valor agregad' \
                 'o, não é o caso de um e-commerce de produtos diversos. É necessário aumentar o alc' \
                 'ance da plataforma com anúncios, promoções ou outras formas.'
+        )
+
+        st.warning(
+            title='O e-commerce não está aproveitando o dia do consumidor',
+            icon='🛒',
+            body=
+                'O dia do consumidor (15 de março), que é o de maior ticket médio do ano, não é um ' \
+                'dos de maior faturamento. A plataforma precisa investir mais em marketing para apr' \
+                'oveitar este dia.'
         )
 
     with col3:
@@ -293,6 +310,8 @@ def main():
         page_icon="📊",
         layout="wide"
     )
+    
+    st.logo('.streamlit/logo.png', )
 
     st.title("Dashboard de Desempenho de Pedidos")
 

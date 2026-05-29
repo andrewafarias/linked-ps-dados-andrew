@@ -57,7 +57,7 @@ def build_product_rank_income(product_rank_income_df: pd.DataFrame) -> go.Figure
         x='total_value',
         y='product_name',
         orientation='h',
-        title='Top 5 Produtos com Maior Faturamento',
+        title='Top 5 produtos com maior faturamento',
         hover_data={'product_category':True, 'unit_price_mean':':.2f'},
         labels={'total_value': 'Faturamento (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
@@ -69,7 +69,7 @@ def build_product_rank_orders_amt(product_rank_orders_amt_df: pd.DataFrame) -> g
         x='quantity',
         y='product_name',
         orientation='h',
-        title='Top 5 Produtos de Maior Volume de Vendas',
+        title='Top 5 produtos de maior volume de vendas',
         hover_data={'product_category':True, 'unit_price_mean':':.2f'},
         labels={'quantity': 'Quantidade Vendida', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
@@ -81,7 +81,7 @@ def build_product_rank_avg_ticket(product_rank_avg_ticket_df: pd.DataFrame) -> g
         x='avg_ticket',
         y='product_name',
         orientation='h',
-        title='Top 5 Produtos com Maior Ticket Médio',
+        title='Top 5 produtos com maior ticket médio',
         hover_data={'unit_price_mean': ':.2f', 'product_category':True},
         labels={'avg_ticket': 'Ticket Médio (R$)', 'product_name': 'Produto', 'unit_price_mean': 'Preço médio (R$)'}
     )
@@ -126,7 +126,7 @@ def build_category_proportion_avg_ticket(category_proportion_avg_ticket_df: pd.D
     return fig
 
 #=============================================
-#--- 05 DISTRIBUIÇÃO GEOGRÁFICA DAS VENDAS ---
+#--- 03 DISTRIBUIÇÃO GEOGRÁFICA DAS VENDAS ---
 #=============================================
 
 @st.cache_data
@@ -269,6 +269,40 @@ def build_region_product_charts(region_product_df: pd.DataFrame) -> dict[str, go
     )
 
     return {'orders_fig': orders_fig, 'income_fig': income_fig, 'ticket_fig':ticket_fig}
+
+#=====================================
+#--- 04 ANÁLISE DOS DIAS DA SEMANA ---
+#=====================================
+
+@st.cache_data
+def build_weekday_avg_income(weekday_metrics: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        weekday_metrics,
+        x='weekday_name',
+        y='avg_income',
+        title='Faturamento médio por dia de semana',
+        labels={'weekday_name': '', 'avg_income': 'Faturamento médio (R$)'}
+    )
+
+@st.cache_data
+def build_weekday_avg_orders_amt(weekday_metrics: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        weekday_metrics,
+        x='weekday_name',
+        y='avg_order_amt',
+        title='Quantidade média de pedidos por dia de semana',
+        labels={'weekday_name': '', 'avg_order_amt':'Quantidade média de pedidos'}
+    )
+
+@st.cache_data
+def build_weekday_avg_ticket(weekday_metrics: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        weekday_metrics,
+        x='weekday_name',
+        y='avg_ticket',
+        title='Ticket médio por dia de semana',
+        labels={'weekday_name': '', 'avg_ticket': 'Ticket médio (R$)'}
+    )
 
 if __name__ == '__main__':
     from data_processing import *

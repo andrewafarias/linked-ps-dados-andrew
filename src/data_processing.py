@@ -26,9 +26,8 @@ def get_avg_ticket(sales_data: pd.DataFrame) -> float:
 def get_status_count(sales_data: pd.DataFrame) -> pd.Series:
     return sales_data.groupby('order_status')['order_id'].count()
 
-@st.cache_data
 def get_cancel_rate(sales_data: pd.DataFrame) -> float:
-    status_df = get_status_count(sales_data).set_index('order_status')['order_id']
+    status_df = get_status_count(sales_data)
     cancel_amt = status_df.get('Cancelado', 0)
     return float(cancel_amt / get_orders_amt(sales_data))
 
@@ -70,6 +69,7 @@ def get_quarter_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
     ).reset_index()
     quarter_summary['avg_ticket'] = quarter_summary['income'] / quarter_summary['orders_amt']
     return quarter_summary
+
 
 #===========================================
 #--- 02 ANALISE DE PRODUTOS E CATEGORIAS ---
@@ -134,6 +134,35 @@ def get_region_product_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
     ).reset_index()
     region_product_metrics['avg_ticket'] = region_product_metrics['total_value'] / region_product_metrics['order_id']
     return region_product_metrics
+
+#=====================================
+#--- 04 ANÁLISE DOS DIAS DA SEMANA ---
+#=====================================
+
+@st.cache_data
+def get_weekday_metrics(sales_data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Retorna um DataFrame com as colunas: 'order_weekday', 'order_id'(count), 'total_value'(sum), 'quantity'(sum), 'avg_ticket'
+    'day_amount', 'avg_order_amt', 'avg_income'
+    """
+    sales_data['order_weekday'] =  pd.to_datetime(sales_data['order_date']).dt.dayofweek
+    
+    # Cria as colunas de quantidade, faturamento e avg_ticket
+    weekday_df = sales_data.groupby('order_weekday').agg(
+        order_id=('order_id', 'count'),
+        total_value=('total_value', 'sum'),
+        quantity=('quantity', 'sum'),
+        day_amount=('order_date', 'nunique')
+    ).reset_index()
+    weekday_df['avg_ticket'] = weekday_df['total_value'] / weekday_df['order_id']
+    weekday_df['avg_order_amt'] = weekday_df['order_id'] / weekday_df['day_amount']
+    weekday_df['avg_income'] = weekday_df['total_value'] / weekday_df['day_amount']
+    
+    # Faz o mapeamento para nome dos dias (atualmente está somente números)
+    weekday_name_dict = {6: 'Domingo', 0: 'Segunda', 1:'Terça', 2:'Quarta', 3:'Quinta', 4:'Sexta', 5:'Sábado'}
+    weekday_df['weekday_name'] = weekday_df['order_weekday'].map(weekday_name_dict)
+
+    return weekday_df
 
 if __name__ == '__main__':
     data = grab_csv_data('data/vendas_linked_ps.csv')

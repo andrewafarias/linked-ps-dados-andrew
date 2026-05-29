@@ -63,9 +63,10 @@ def render_sales_overview_panel(sales_data):
     with col2:
         st.plotly_chart(period_figures['period_orders_amt'])
 
+    
 
 def render_products_and_categories_panel(sales_data):
-    st.header("Análise de Produtos e Categorias")
+    st.header("Produtos e Categorias")
 
     analysis_metric = st.radio(
         'Métrica de análise:',
@@ -154,31 +155,55 @@ def render_geographical_distribution_panel(sales_data):
         fig = charts.build_regions_avg_ticket(region_df)
         st.plotly_chart(fig)
     
-    # === GRÁFICOS DE MAIOR CATEGORIA POR REGIÃO ===
-    st.subheader('Categorias por região')
-    
-    region_category_df = dp.get_region_category_metrics(sales_data)
-    figs = charts.build_region_category_charts(region_category_df)
+    opt = st.radio(
+        'Escolha o atributo a ser analisado por região',
+        ['Produto', 'Categoria'],
+        horizontal=True,
+        key='type_selector'
+    )
+
+
+    if opt == 'Categoria':
+        # === GRÁFICOS DE MAIOR CATEGORIA POR REGIÃO ===
+        # st.subheader('Categorias por região')
+        
+        region_category_df = dp.get_region_category_metrics(sales_data)
+        figs = charts.build_region_category_charts(region_category_df)
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1: st.plotly_chart(figs['income_fig'])
+        with col2: st.plotly_chart(figs['orders_fig'])
+        with col3: st.plotly_chart(figs['ticket_fig'])
+    else:
+        # === GRÁFICOS DE MAIOR PRODUTO POR REGIÃO ===
+        # st.subheader('Produtos por região')
+        
+        region_product_df = dp.get_region_product_metrics(sales_data)
+        figs = charts.build_region_product_charts(region_product_df)
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1: st.plotly_chart(figs['income_fig'])
+        with col2: st.plotly_chart(figs['orders_fig'])
+        with col3: st.plotly_chart(figs['ticket_fig'])
+
+def render_weekday_analysis(sales_data):
+    st.header('Dias da Semana')
+
+    weekday_df = dp.get_weekday_metrics(sales_data)
+    income, order_amt, avg_ticket = (
+        charts.build_weekday_avg_income(weekday_df),
+        charts.build_weekday_avg_orders_amt(weekday_df),
+        charts.build_weekday_avg_ticket(weekday_df),
+    )
 
     col1, col2, col3 = st.columns(3)
+    with col1: st.plotly_chart(income)
+    with col2: st.plotly_chart(order_amt)
+    with col3: st.plotly_chart(avg_ticket)
 
-    with col1: st.plotly_chart(figs['income_fig'])
-    with col2: st.plotly_chart(figs['orders_fig'])
-    with col3: st.plotly_chart(figs['ticket_fig'])
-    
-    # === GRÁFICOS DE MAIOR PRODUTO POR REGIÃO ===
-    st.subheader('Produtos por região')
-    
-    region_product_df = dp.get_region_product_metrics(sales_data)
-    figs = charts.build_region_product_charts(region_product_df)
 
-    col1, col2, col3 = st.columns(3)
-
-    with col1: st.plotly_chart(figs['income_fig'])
-    with col2: st.plotly_chart(figs['orders_fig'])
-    with col3: st.plotly_chart(figs['ticket_fig'])
-
-    
 def render_insights_and_conclusions(sales_data):
     pass
 
@@ -202,7 +227,10 @@ def main():
     # 03 DISTRIBUIÇÃO GEOGRÁFICA
     render_geographical_distribution_panel(sales_data)
 
-    # 04 INSGHTS E CONCLUSÕES
+    # 04 ANÁLISE SEMANAL
+    render_weekday_analysis(sales_data)
+
+    # 05 INSGHTS E CONCLUSÕES
     render_insights_and_conclusions(sales_data)
     
 

@@ -313,10 +313,12 @@ def main():
     
     st.logo('.streamlit/logo.png', )
 
-    st.title("Dashboard de Desempenho de Pedidos")
+    st.title("Dashboard de Desempenho da Linked E-Commerce")
+    st.write('---')
 
     # 01 VISÃO GERAL DE VENDAS
     render_sales_overview_panel(sales_data)
+
     sales_data = sales_data[sales_data['order_status'] != 'Cancelado'] # Gambiarra
 
     # 02 ANÁLISE POR PRODUTO E CATEGORIA
